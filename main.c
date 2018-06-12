@@ -55,8 +55,10 @@ int getTemp(int file, int address) {
 
     int low_temp = data[0] & 0x80;
     if (low_temp) {
+      printf("Low temp\n");
       return data[0] * 16 + data[1] / 16 - 4096;
     } else {
+      printf("High temp\n");
       return data[0] * 16 + data[1] * 0.0625;
     }
   }
