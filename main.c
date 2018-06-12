@@ -40,7 +40,12 @@ int getTemp(int file, int address) {
   reg[1] = 0x04;
   write(file, reg, 1);
 
-  sleep(1);
+  char stat[1] = {0};
+
+  do {
+    read(file, stat, 1);
+    // printf("%d\n", stat[0]);
+  } while(stat[0] != 1);
 
   char data[2] = {0};
 
