@@ -4,6 +4,8 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
+float getTemp(int file, int address);
+
 void main() {
   // Create I2C bus
   int file;
@@ -15,15 +17,15 @@ void main() {
     exit(1);
   }
 
-  int temp1 = getTemp(file, 0x60);
-  int temp2 = getTemp(file, 0x67);
+  float temp1 = getTemp(file, 0x60);
+  float temp2 = getTemp(file, 0x67);
 
-  printf("%d %d", temp1, temp2);
+  printf("%f %f", temp1, temp2);
 
   exit(0);
 }
 
-int getTemp(int file, int address) {
+float getTemp(int file, int address) {
 
   ioctl(file, I2C_SLAVE, address);
 
@@ -42,10 +44,14 @@ int getTemp(int file, int address) {
 
   char stat[1] = {0};
 
-  do {
-    read(file, stat, 1);
-    // printf("%d\n", stat[0]);
-  } while(stat[0] != 1);
+  // do {
+  //   printf("Will sleep\n");
+  //   sleep(1);
+  //   printf("Will read state\n");
+  //   read(file, stat, 1);
+  //   printf("Did read state\n");
+  //   printf("%d\n", stat[0]);
+  // } while(stat[0] == 0);
 
   char data[2] = {0};
 
@@ -54,12 +60,15 @@ int getTemp(int file, int address) {
   } else {
 
     int low_temp = data[0] & 0x80;
+    float r;
     if (low_temp) {
-      printf("Low temp\n");
-      return data[0] * 16 + data[1] / 16 - 4096;
+      // printf("Low temp\n");
+      r = data[0] * 16 + data[1] / 16 - 4096;
+      return r;
     } else {
-      printf("High temp\n");
-      return data[0] * 16 + data[1] * 0.0625;
+      // printf("High temp\n");
+      r = data[0] * 16 + data[1] * 0.0625;
+      return r;
     }
   }
 }
