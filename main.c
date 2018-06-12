@@ -53,11 +53,11 @@ int getTemp(int file, int address) {
     return 0;
   } else {
 
-    int low_temp = data[1] & 0x80;
-    if(low_temp) {
+    int low_temp = data[0] & 0x80;
+    if (low_temp) {
       return data[0] * 16 + data[1] / 16 - 4096;
     } else {
-      return data[0] *16 + data[1] * 0.0625;
+      return data[0] * 16 + data[1] * 0.0625;
     }
   }
 }
